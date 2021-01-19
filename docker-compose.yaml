@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  app:
+    image: docker-rolling-update
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.js"]        
+    deploy:
+      replicas: 1
+      update_config:
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+      rollback_config:
+        order: start-first
+        delay: 10s
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    ports:
+      - 12345:12345
+    command: node index.js
